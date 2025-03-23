@@ -57,33 +57,41 @@ VALUES
 
 --! PostgreSQL Queries
 --* 1. Find books that are out of stock.
+-- Here we are using WHERE to filter the books that have a stock of 0.
 SELECT title FROM books WHERE stock = 0;
 
 --* 2. Retrieve the most expensive book in the store.
+-- Here we are using ORDER BY to sort the books by price in descending order and LIMIT to get the first row.
 SELECT * FROM books ORDER BY price DESC LIMIT 1;
 
 --* 3. Find the total number of orders placed by each customer.
+-- Here we are using GROUP BY to group the orders by customer and COUNT to count the number of orders for each customer.
 Select name, count(*) as total_orders From customers
 JOIN orders ON customers.id = orders.customer_id
 GROUP BY customers.name;
 
 --* 4. Calculate the total revenue generated from book sales.
+-- Here we are using SUM to calculate the total revenue and JOIN to combine the books and orders tables.
 SELECT sum(quantity * price) as total_revenue From books
 Join orders ON books.id = orders.book_id;
 
 --* 5. List all customers who have placed more than one order.
+-- Here we are using HAVING to filter the customers who have placed more than one order and GROUP BY to group the orders by customer.
 SELECT name, count(*) as orders_count FROM customers
 JOIN orders ON customers.id = orders.customer_id
 GROUP BY customers.name
 HAVING count(*) > 1;
 
 --* 6. Find the average price of books in the store.
+-- Here we are using TRUNC to truncate the average price of books to 2 decimal places.
 SELECT TRUNC(avg(price),2) as avg_book_price FROM books
 
 --* 7. Increase the price of all books published before 2000 by 10%.
+-- Here we are using UPDATE to update the price of books that were published before 2000 and use SET to update the price.
 UPDATE books
 SET price = price + (price * 0.10) 
 WHERE CAST(published_year as INT) < 2000;
 
 --* 8. Delete customers who haven't placed any orders.
+-- Here we are using NOT IN to filter the customers who have placed at least one order and DELETE to delete the customers who haven't placed any orders.
 DELETE FROM customers WHERE id NOT IN (SELECT customer_id FROM orders);
